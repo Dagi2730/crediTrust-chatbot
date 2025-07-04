@@ -1,0 +1,11 @@
+pandas
+matplotlib
+seaborn
+scikit-learn
+sentence-transformers
+faiss-cpu         # or faiss-gpu if you have CUDA
+langchain
+openai
+streamlit
+gradio
+tqdm
