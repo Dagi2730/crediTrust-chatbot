@@ -58,4 +58,4 @@ local_settings.py
 
 # Ignore all CSV files in the data folder except filtered_complaints.csv
 data/*.csv
-!data/filtered_complaints.csv
+
