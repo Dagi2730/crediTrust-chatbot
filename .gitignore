@@ -55,3 +55,7 @@ local_settings.py
 # Others
 *.bak
 *.tmp
+
+# Ignore all CSV files in the data folder except filtered_complaints.csv
+data/*.csv
+
