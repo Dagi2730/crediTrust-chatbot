@@ -1,41 +1,72 @@
-# Task 3 – Retrieval-Augmented Generation (RAG) Pipeline
+Task 4: Interactive Chat Interface for CrediTrust AI Assistant
+Overview
+This task focuses on developing a clean and intuitive web-based interface for the CrediTrust AI Chat Assistant, enabling users to interact with a Retrieval-Augmented Generation (RAG) system to query customer complaints.
 
-## Overview
+The goal is to create a user-friendly tool that allows non-technical stakeholders—such as customer support agents, financial analysts, and internal teams—to gain insights from historical consumer complaints data via natural language.
 
-This project implements a Retrieval-Augmented Generation (RAG) system designed to answer questions about customer complaints submitted to CrediTrust. The system combines vector-based retrieval with a language model to generate informed responses grounded in real complaint data.
+Objectives
+Build an interactive interface using Streamlit.
 
-## Objective
+Enable users to ask natural language questions about customer complaints.
 
-- Retrieve the most relevant complaint excerpts for a user query using vector similarity.
-- Generate natural language answers based strictly on retrieved context.
-- Evaluate the accuracy and usefulness of generated responses using qualitative analysis.
+Display AI-generated answers along with the retrieved source text chunks to enhance transparency.
 
-## Components
+Implement a session-aware design to maintain chat history.
 
-### 1. Retriever
-- Encodes the input question using the `all-MiniLM-L6-v2` model.
-- Searches a FAISS index to retrieve the top-k most relevant chunks.
-- Returns these chunks as context for generation.
+Include a "Clear" button to reset the interface.
 
-### 2. Prompt Engineering
-A structured prompt guides the LLM to act as a helpful financial analyst and answer based only on provided context. If the context is insufficient, the model is instructed to say so.
+Features
+Text Input Box for entering questions
 
-### 3. Generator
-- Uses Hugging Face’s GPT-2 model to generate a response based on the prompt.
-- Limits the output to a maximum of 150 new tokens for clarity and focus.
+"Ask" Button to submit queries
 
-### 4. Evaluation
-- A set of 5 representative questions is used to evaluate the system’s performance.
-- Results are stored in a CSV file with:
-  - Question
-  - Generated Answer
-  - Retrieved Sources
-  - Quality Score (1–5)
-  - Comments
+AI-Generated Answer Display using RAG
 
-## Running the Pipeline
+Source Context Display below each answer (retrieved text chunks)
 
-Ensure required files (`faiss_index.bin`, `chunked_metadata.csv`) exist in the correct paths, then run:
+Clear Chat Button to reset the session
 
-```bash
-python src/rag_pipeline.py
+Session History to track user interactions
+
+Implementation Summary
+The chatbot is powered by the following components:
+
+Component	Description
+Interface Framework	Streamlit
+Embedding Model	all-MiniLM-L6-v2 (Sentence Transformers)
+Vector Store	FAISS
+Dataset	Preprocessed local CSV (filtered_complaints.csv)
+Retrieval Pipeline	Top-k semantic similarity on vectorized complaint narratives
+Response Generator	Open-source transformer LLM (local or HuggingFace-hosted)
+
+Setup Instructions
+1. Clone the Repository and Activate Environment
+bash
+Copy
+Edit
+git clone https://github.com/your-org/crediTrust-chatbot.git
+cd crediTrust-chatbot
+python -m venv .venv
+.venv\Scripts\activate   # On Windows
+# or
+source .venv/bin/activate  # On macOS/Linux
+2. Install Dependencies
+bash
+Copy
+Edit
+pip install -r requirements.txt
+3. Generate the Vector Index
+This step will embed complaint narratives and create the FAISS index used for retrieval.
+
+bash
+Copy
+Edit
+python generate_index.py
+Note: To reduce latency, the script processes the first 5,000 entries from filtered_complaints.csv.
+
+4. Launch the Streamlit App
+bash
+Copy
+Edit
+streamlit run app.py
+The app will open in your default web browser at http://localhost:8501.

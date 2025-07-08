@@ -9,3 +9,8 @@ openai
 streamlit
 gradio
 tqdm
+streamlit
+faiss-cpu
+sentence-transformers
+transformers
+torch
