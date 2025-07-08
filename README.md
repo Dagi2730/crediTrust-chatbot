@@ -1,65 +1,41 @@
-# Task 2: Text Chunking, Embedding, and Vector Store Indexing
+# Task 3 – Retrieval-Augmented Generation (RAG) Pipeline
 
 ## Overview
 
-This task converts cleaned complaint narratives into a format optimized for efficient semantic search. Since long narratives lose detail when embedded as single vectors, we split texts into smaller chunks before embedding and indexing.
+This project implements a Retrieval-Augmented Generation (RAG) system designed to answer questions about customer complaints submitted to CrediTrust. The system combines vector-based retrieval with a language model to generate informed responses grounded in real complaint data.
 
----
+## Objective
 
-## Key Components
+- Retrieve the most relevant complaint excerpts for a user query using vector similarity.
+- Generate natural language answers based strictly on retrieved context.
+- Evaluate the accuracy and usefulness of generated responses using qualitative analysis.
 
-### 1. Text Chunking
-- Implemented using LangChain’s `RecursiveCharacterTextSplitter`.
-- Splits long texts into overlapping chunks for better semantic representation.
-- Parameters such as `chunk_size` and `chunk_overlap` are experimentally chosen to balance context preservation and embedding speed.
+## Components
 
-### 2. Embedding Model
-- Used the pre-trained model: `sentence-transformers/all-MiniLM-L6-v2`.
-- Selected for its good balance of accuracy, speed, and lightweight architecture suitable for large datasets.
+### 1. Retriever
+- Encodes the input question using the `all-MiniLM-L6-v2` model.
+- Searches a FAISS index to retrieve the top-k most relevant chunks.
+- Returns these chunks as context for generation.
 
-### 3. Vector Store Indexing
-- Vector embeddings generated for each text chunk.
-- Stored in a FAISS index for fast similarity search.
-- Metadata (complaint ID, product category, chunk index, chunk text) is saved alongside embeddings to trace results back to the source.
+### 2. Prompt Engineering
+A structured prompt guides the LLM to act as a helpful financial analyst and answer based only on provided context. If the context is insufficient, the model is instructed to say so.
 
----
+### 3. Generator
+- Uses Hugging Face’s GPT-2 model to generate a response based on the prompt.
+- Limits the output to a maximum of 150 new tokens for clarity and focus.
 
-## Deliverables
+### 4. Evaluation
+- A set of 5 representative questions is used to evaluate the system’s performance.
+- Results are stored in a CSV file with:
+  - Question
+  - Generated Answer
+  - Retrieved Sources
+  - Quality Score (1–5)
+  - Comments
 
-- **Chunking, embedding, and indexing script** that:
-  - Reads cleaned narratives.
-  - Splits texts into chunks.
-  - Generates embeddings.
-  - Creates and persists a FAISS vector store.
-  - Saves chunk metadata for traceability.
+## Running the Pipeline
 
-- **Persisted vector store** saved under the `vector_store/` directory:
-  - `faiss_index.bin` — FAISS index file.
-  - `chunked_metadata.csv` — CSV file with metadata for each chunk.
-
-- **Report section** detailing:
-  - The chunking strategy used, including chosen `chunk_size` and `chunk_overlap` and justification.
-  - Reason for selecting the `all-MiniLM-L6-v2` embedding model.
-
----
-
-## How to Use
-
-1. Prepare cleaned complaint texts as input.
-2. Run the script to produce the vector store and metadata.
-3. Use the vector store for semantic search queries with similarity scoring.
-
----
-
-## Dependencies
-
-- Python 3.8+
-- pandas
-- faiss-cpu
-- sentence-transformers
-- langchain
-
-Install via:
+Ensure required files (`faiss_index.bin`, `chunked_metadata.csv`) exist in the correct paths, then run:
 
 ```bash
-pip install pandas faiss-cpu sentence-transformers langchain
+python src/rag_pipeline.py

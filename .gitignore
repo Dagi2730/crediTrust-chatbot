@@ -63,3 +63,6 @@ data/*.csv
 /*.bin
 /*.pkl
 /*.csv
+
+# Ignore virtual environments
+.venv/
